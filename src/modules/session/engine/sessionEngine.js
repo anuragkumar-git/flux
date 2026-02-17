@@ -1,3 +1,4 @@
+const PAUSE_TIME_MS = 10 * 60 * 1000; //10 minutes
 /**
  * Session Engine
  * Manages only ONE active session at a time.
@@ -13,6 +14,17 @@ export class SessionEngine {
    * Returns current active session
    */
     getCurrentSession() {
+        if (!this.currentSession) return null
+
+        if (this.currentSession.status === "paused") {
+            const now = Date.now()
+            const pauseDuration = now - this.pauseStartedAt
+
+            if (pauseDuration > PAUSE_TIME_MS) {
+                return this.endSession("pause-timeout")
+            }
+        }
+
         return this.currentSession
     }
 
@@ -35,7 +47,8 @@ export class SessionEngine {
             status: "running",
             totalActiveDuration: 0,
             customLimitMs,
-            description
+            description,
+            // endedReason: ""
         }
 
         this.pauseStartedAt = null;
@@ -44,4 +57,103 @@ export class SessionEngine {
         return this.currentSession;
     }
 
+    /**
+     *  Pause current session
+     */
+    pauseSession() {
+        if (!this.currentSession || !this.currentSession.status !== "running") {
+            throw new Error("No runnig session to pause")
+        }
+
+        this.pauseStartedAt = Date.now()
+        this.currentSession.status = "paused"
+
+        return this.currentSession
+    }
+
+    /**
+     *  resume currently paused session
+     */
+    resumeSession() {
+        if (!this.currentSession || !this.currentSession.status !== "paused") {
+            throw new Error("No paused session to resume")
+        }
+
+        const now = Date.now()
+        const pauseDuration = now - this.pauseStartedAt
+
+        if (pauseDuration > PAUSE_TIME_MS) {
+            return this.endSession("pause-timeout")
+        }
+
+        this.accumulatedPauseTime += pauseDuration
+        this.pauseStartedAt = null
+        this.currentSession.status = "running"
+
+        return this.currentSession
+    }
+
+    /**
+    *  getElapsedTime
+    */
+    getElapsedTime() {
+        if (!this.currentSession) return 0
+
+        const now = Date.now();
+
+        if (this.currentSession.status === "running") {
+            return (
+                now -
+                this.currentSession.startTime -
+                this.accumulatedPauseTime)
+        }
+
+        if (this.currentSession.status === "paused") {
+            return (
+                this.pauseStartedAt -
+                this.currentSession.startTime -
+                this.accumulatedPauseTime
+            )
+        }
+
+        if (this.currentSession.status === "ended") {
+            return this.currentSession.totalActiveDuration
+        }
+
+        return 0
+    }
+
+    /**
+   *  End currently active session
+   */
+    endSession(reason = "manual") {
+        if (!this.currentSession) {
+            throw new Error("No active session to end")
+        }
+
+        const now = Date.now()
+
+        let finalDuration
+
+        if (this.currentSession.status === "running") {
+            finalDuration =
+                now -
+                this.currentSession.startTime -
+                this.accumulatedPauseTime
+        } else if (this.currentSession.status === "paused") {
+            finalDuration =
+                this.pauseStartedAt -
+                this.currentSession.startTime -
+                this.accumulatedPauseTime
+        } else {
+            return this.currentSession
+        }
+
+        this.currentSession.endTime = now;
+        this.currentSession.status = "ended"
+        this.currentSession.totalActiveDuration = finalDuration
+        this.currentSession.endedReason = reason
+
+        return this.currentSession
+    }
 }
