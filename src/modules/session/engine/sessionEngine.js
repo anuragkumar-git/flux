@@ -162,4 +162,13 @@ export class SessionEngine {
         return this.currentSession
     }
 
+    /**
+    * Checks time limit of current active session
+    */
+    isLimitReached() {
+        if (!this.currentSession) return null
+
+        const elapsed = this.getElapsedTime()
+        return elapsed >= this.currentSession.customLimitMs
+    }
 }
