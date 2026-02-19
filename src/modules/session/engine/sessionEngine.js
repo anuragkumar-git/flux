@@ -10,23 +10,6 @@ export class SessionEngine {
         this.accumulatedPauseTime = 0
     }
 
-    /**
-   * Returns current active session
-   */
-    getCurrentSession() {
-        if (!this.currentSession) return null
-
-        if (this.currentSession.status === "paused") {
-            const now = Date.now()
-            const pauseDuration = now - this.pauseStartedAt
-
-            if (pauseDuration > PAUSE_TIME_MS) {
-                return this.endSession("pause-timeout")
-            }
-        }
-
-        return this.currentSession
-    }
 
     /**
      * Starts a new session
@@ -48,7 +31,6 @@ export class SessionEngine {
             totalActiveDuration: 0,
             customLimitMs,
             description,
-            // endedReason: ""
         }
 
         this.pauseStartedAt = null;
@@ -61,12 +43,13 @@ export class SessionEngine {
      *  Pause current session
      */
     pauseSession() {
-        if (!this.currentSession || !this.currentSession.status !== "running") {
-            throw new Error("No runnig session to pause")
+        // console.log("pauseSessionStatus:", this.currentSession.status);
+        if (!this.currentSession || this.currentSession.status !== "running") {
+            // console.log("!pauseSessionStatus:", this.currentSession.status);
+            throw new Error("No running session to pause")
         }
-
         this.pauseStartedAt = Date.now()
-        this.currentSession.status = "paused"
+        this.currentSession.status = "pause"
 
         return this.currentSession
     }
@@ -75,9 +58,11 @@ export class SessionEngine {
      *  resume currently paused session
      */
     resumeSession() {
-        if (!this.currentSession || !this.currentSession.status !== "paused") {
+        if (!this.currentSession || this.currentSession.status !== "pause") {
+            // console.log("!resumeSessionStatus:", this.currentSession.status);
             throw new Error("No paused session to resume")
         }
+        // console.log("resumeSessionStatus:", this.currentSession.status);
 
         const now = Date.now()
         const pauseDuration = now - this.pauseStartedAt
@@ -108,7 +93,7 @@ export class SessionEngine {
                 this.accumulatedPauseTime)
         }
 
-        if (this.currentSession.status === "paused") {
+        if (this.currentSession.status === "pause") {
             return (
                 this.pauseStartedAt -
                 this.currentSession.startTime -
@@ -140,7 +125,7 @@ export class SessionEngine {
                 now -
                 this.currentSession.startTime -
                 this.accumulatedPauseTime
-        } else if (this.currentSession.status === "paused") {
+        } else if (this.currentSession.status === "pause") {
             finalDuration =
                 this.pauseStartedAt -
                 this.currentSession.startTime -
@@ -156,4 +141,25 @@ export class SessionEngine {
 
         return this.currentSession
     }
+
+    /**
+   * Returns current active session
+   */
+    getCurrentSession() {
+        if (!this.currentSession) return null
+
+        if (this.currentSession.status === "pause") {
+            console.log("sessionStauts:", this.currentSession.status);
+
+            const now = Date.now()
+            const pauseDuration = now - this.pauseStartedAt
+
+            if (pauseDuration > PAUSE_TIME_MS) {
+                return this.endSession("pause-timeout")
+            }
+        }
+
+        return this.currentSession
+    }
+
 }
