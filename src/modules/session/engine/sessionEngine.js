@@ -148,8 +148,13 @@ export class SessionEngine {
     getCurrentSession() {
         if (!this.currentSession) return null
 
+        // Check midnight crossing
+        if (this.currentSession.status === "running" && this.hasCrossedMidnight()) {
+            return this.endSession("midnight")
+        }
+
         if (this.currentSession.status === "pause") {
-            console.log("sessionStauts:", this.currentSession.status);
+            // console.log("sessionStauts:", this.currentSession.status);
 
             const now = Date.now()
             const pauseDuration = now - this.pauseStartedAt
@@ -170,5 +175,21 @@ export class SessionEngine {
 
         const elapsed = this.getElapsedTime()
         return elapsed >= this.currentSession.customLimitMs
+    }
+
+    /**
+    * Detect Midnight current active session
+    */
+    hasCrossedMidnight() {
+        if (!this.currentSession) return null
+
+        const startDate = new Date(this.currentSession.startTime)
+        const nowDate = new Date()
+
+        return (
+            startDate.getFullYear() !== nowDate.getFullYear() ||
+            startDate.getMonth() !== nowDate.getMonth() ||
+            startDate.getDate() !== nowDate.getDate()
+        )
     }
 }
