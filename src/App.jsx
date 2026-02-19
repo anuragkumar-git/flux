@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { SessionEngine } from "./modules/session/engine/sessionEngine";
+import { ensureDayExists, getAllDays } from "./storage/dayRepository";
+import { saveSession } from "./storage/sessionRepository";
 
 function App() {
-  // useEffect(() => {
+  useEffect(() => {
     // const engine = new SessionEngine();
 
     // console.log("Starting session...");
@@ -25,9 +27,31 @@ function App() {
     //   console.log("Elapsed Time:", engine.getElapsedTime());
     // }, 8000);
 
-    // window.engine = new SessionEngine();
-    // console.log("Engine attached to window as 'engine'");
-  // }, []);
+    window.engine = new SessionEngine();
+    console.log("Engine attached to window as 'engine'");
+    async function testStorage() {
+      const dayId = "2026-02-01";
+
+      await ensureDayExists(dayId);
+
+      await saveSession(
+        {
+          id: crypto.randomUUID(),
+          startTime: Date.now(),
+          endTime: Date.now(),
+          status: "ended",
+          totalActiveDuration: 5000,
+          customLimitMs: 10000,
+          description: "Test",
+        },
+        dayId,
+      );
+
+      console.log("Data saved Successfully");
+    }
+
+    // testStorage();
+  }, []);
   return (
     <>
       <h1>Flux</h1>{" "}

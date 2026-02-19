@@ -1,4 +1,5 @@
-const PAUSE_TIME_MS = 10 * 60 * 1000; //10 minutes
+// const PAUSE_TIME_MS = 10 * 60 * 1000; //10 minutes
+const PAUSE_TIME_MS = 4000; //4 Seconds
 /**
  * Session Engine
  * Manages only ONE active session at a time.
