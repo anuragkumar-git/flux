@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SessionEngine } from "./modules/session/engine/sessionEngine";
 import { ensureDayExists, getAllDays } from "./storage/dayRepository";
 import { saveSession } from "./storage/sessionRepository";
+import { sessionService } from "./services/sessionService";
 
 function App() {
   useEffect(() => {
@@ -22,13 +23,13 @@ function App() {
 
     // setTimeout(() => {
     //   console.log("Ending session...");
-    //   const result = engine.endSession();
+    //   const result = engine.endedSession();
     //   console.log("Final session:", result);
     //   console.log("Elapsed Time:", engine.getElapsedTime());
     // }, 8000);
 
-    window.engine = new SessionEngine();
-    console.log("Engine attached to window as 'engine'");
+    window.service = sessionService;
+    console.log("Service attached to window as 'service'");
     async function testStorage() {
       const dayId = "2026-02-01";
 

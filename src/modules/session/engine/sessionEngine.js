@@ -69,7 +69,7 @@ export class SessionEngine {
         const pauseDuration = now - this.pauseStartedAt
 
         if (pauseDuration > PAUSE_TIME_MS) {
-            return this.endSession("pause-timeout")
+            return this.endedSession("pause-timeout")
         }
 
         this.accumulatedPauseTime += pauseDuration
@@ -112,7 +112,7 @@ export class SessionEngine {
     /**
    *  End currently active session
    */
-    endSession(reason = "manual") {
+    endedSession(reason = "manual") {
         if (!this.currentSession) {
             throw new Error("No active session to end")
         }
@@ -149,9 +149,12 @@ export class SessionEngine {
     getCurrentSession() {
         if (!this.currentSession) return null
 
+        // if(this.currentSession.status === "running" && this.isLimitReached()){
+        //     return this.endedSession("session-timout")
+        // }
         // Check midnight crossing
         if (this.currentSession.status === "running" && this.hasCrossedMidnight()) {
-            return this.endSession("midnight")
+            return this.endedSession("midnight")
         }
 
         if (this.currentSession.status === "pause") {
@@ -161,7 +164,7 @@ export class SessionEngine {
             const pauseDuration = now - this.pauseStartedAt
 
             if (pauseDuration > PAUSE_TIME_MS) {
-                return this.endSession("pause-timeout")
+                return this.endedSession("pause-timeout")
             }
         }
 
