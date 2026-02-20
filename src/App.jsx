@@ -3,6 +3,7 @@ import { SessionEngine } from "./modules/session/engine/sessionEngine";
 import { ensureDayExists, getAllDays } from "./storage/dayRepository";
 import { saveSession } from "./storage/sessionRepository";
 import { sessionService } from "./services/sessionService";
+import SessionControl from "./shared/components/SessionControl";
 
 function App() {
   useEffect(() => {
@@ -55,7 +56,7 @@ function App() {
   }, []);
   return (
     <>
-      <h1>Flux</h1>{" "}
+      <h1>Flux</h1> <SessionControl />
     </>
   );
 }
