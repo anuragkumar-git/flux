@@ -17,7 +17,8 @@ export class SessionEngine {
      * @param {string} description
      * @param {number} customLimitMs
      */
-    startSession(description, customLimitMs = 3 * 60 * 60 * 1000) {
+    // startSession(description, customLimitMs = 3 * 60 * 60 * 1000) {
+    startSession(description, customLimitMs = 6000) {
         if (this.currentSession && this.currentSession.status === "running") {
             throw new Error("Session already running")
         }
@@ -149,9 +150,9 @@ export class SessionEngine {
     getCurrentSession() {
         if (!this.currentSession) return null
 
-        // if(this.currentSession.status === "running" && this.isLimitReached()){
-        //     return this.endedSession("session-timout")
-        // }
+        if(this.currentSession.status === "running" && this.isLimitReached()){
+            return this.endedSession("session-timout")
+        }
         // Check midnight crossing
         if (this.currentSession.status === "running" && this.hasCrossedMidnight()) {
             return this.endedSession("midnight")
