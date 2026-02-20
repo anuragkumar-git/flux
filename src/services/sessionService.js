@@ -94,6 +94,14 @@ class SessionService {
             sessions
         }
     }
+
+    getElapsedTime() {
+        return this.engine.getElapsedTime();
+    }
+
+    isLimitReached() {
+        return this.engine.isLimitReached();
+    }
 }
 
 

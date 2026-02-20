@@ -31,26 +31,26 @@ function App() {
 
     window.service = sessionService;
     console.log("Service attached to window as 'service'");
-    async function testStorage() {
-      const dayId = "2026-02-01";
+    // async function testStorage() {
+    //   const dayId = "2026-02-01";
 
-      await ensureDayExists(dayId);
+    //   await ensureDayExists(dayId);
 
-      await saveSession(
-        {
-          id: crypto.randomUUID(),
-          startTime: Date.now(),
-          endTime: Date.now(),
-          status: "ended",
-          totalActiveDuration: 5000,
-          customLimitMs: 10000,
-          description: "Test",
-        },
-        dayId,
-      );
+    //   await saveSession(
+    //     {
+    //       id: crypto.randomUUID(),
+    //       startTime: Date.now(),
+    //       endTime: Date.now(),
+    //       status: "ended",
+    //       totalActiveDuration: 5000,
+    //       customLimitMs: 10000,
+    //       description: "Test",
+    //     },
+    //     dayId,
+    //   );
 
-      console.log("Data saved Successfully");
-    }
+    //   console.log("Data saved Successfully");
+    // }
 
     // testStorage();
   }, []);
