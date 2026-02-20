@@ -1,6 +1,6 @@
 import { SessionEngine } from "../modules/session/engine/sessionEngine";
 import { ensureDayExists } from "../storage/dayRepository";
-import { saveSession } from "../storage/sessionRepository";
+import { getSessionbyDay, saveSession } from "../storage/sessionRepository";
 
 /**
  * SessionService
@@ -81,7 +81,19 @@ class SessionService {
         await ensureDayExists(dayId)
         await saveSession(session, dayId)
     }
-    
+
+    async getDailySummary(dayId) {
+        const sessions = await getSessionbyDay(dayId)
+
+        const totalDuration = sessions.reduce((sum, session) => sum + session.totalActiveDuration, 0)
+
+        return {
+            dayId,
+            totalDuration,
+            totalSessions: sessions.length,
+            sessions
+        }
+    }
 }
 
 
