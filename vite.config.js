@@ -16,15 +16,15 @@ export default defineConfig({
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/',
+        start_url: '/flux/',
         icons: [
           {
-            src: '/pwa.png',
+            src: 'pwa.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/pwa1.png',
+            src: 'pwa1.png',
             sizes: '512x512',
             type: 'image/png'
           }

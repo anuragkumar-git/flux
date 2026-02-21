@@ -9,13 +9,11 @@ export default function SessionControl() {
   const [showStart, setShowStart] = useState(false);
 
   useEffect(() => {
-    console.log(session);
 
     setShowStart(true);
     const interval = setInterval(async () => {
       const current = await sessionService.getCurrentSession();
       setSession(current);
-      console.log("interval");
 
       if (current && current.status !== "ended") {
         setElapsed(sessionService.getElapsedTime());
