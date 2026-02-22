@@ -50,9 +50,11 @@ class SessionService {
     /**
      * End session and persist it
      */
-    async end(reason = "manual") {
+    async end({ reason = "manual", description = "Untitled Session" } = {}) {
         const endedSession = this.engine.endedSession(reason)
 
+        endedSession.description = description;
+        
         if (!this.hasPersistedCurrentSession) {
             await this.persistSession(endedSession)
             this.hasPersistedCurrentSession = true
