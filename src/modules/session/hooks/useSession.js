@@ -50,8 +50,10 @@ export default function useSession() {
     }
 
     const confirmEnd = async (description) => {
-        const ended = await sessionService.end(pendingEndReason)
-        ended.description = description || "Untitled Session"
+        await sessionService.end({
+            reason: pendingEndReason,
+            description
+        })
         setShowDecsriptionInput(false)
         setPendingEndReason(null)
         refresh()
