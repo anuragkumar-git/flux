@@ -4,6 +4,7 @@ import { ensureDayExists, getAllDays } from "./storage/dayRepository";
 import { saveSession } from "./storage/sessionRepository";
 import { sessionService } from "./services/sessionService";
 import SessionControl from "./shared/components/SessionControl";
+import SessionLayout from "./modules/session/components/SessionLayout";
 
 function App() {
   useEffect(() => {
@@ -56,7 +57,7 @@ function App() {
   }, []);
   return (
     <>
-      <h1>Flux</h1> <SessionControl />
+      <SessionLayout />
     </>
   );
 }
