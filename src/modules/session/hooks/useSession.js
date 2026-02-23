@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { sessionService } from '../../../services/sessionService'
 
-export default function useSession() {
+export function useSession() {
     const [session, setSession] = useState(null)
     const [elapsed, setElapsed] = useState(0)
     const [dailySummary, setDailySummary] = useState(null)

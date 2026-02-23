@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function SessionLayout({ main, sidebar }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,6 +33,7 @@ export default function SessionLayout({ main, sidebar }) {
               >
                 Close
               </button>
+              {sidebar}
             </div>
           </div>
         )}

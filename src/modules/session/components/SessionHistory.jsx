@@ -1,5 +1,4 @@
-import React from "react";
-import { fomatTime } from "../utils/formatTime";
+import { fomatTime } from "../../../shared/utils/formatTime";
 
 export default function SessionHistory({ sessions = [] }) {
   return (

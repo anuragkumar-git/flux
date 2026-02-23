@@ -1,63 +1,87 @@
-import { useEffect, useState } from "react";
-import { SessionEngine } from "./modules/session/engine/sessionEngine";
-import { ensureDayExists, getAllDays } from "./storage/dayRepository";
-import { saveSession } from "./storage/sessionRepository";
-import { sessionService } from "./services/sessionService";
-import SessionControl from "./shared/components/SessionControl";
+import { useState } from "react";
+import {useSession} from "./modules/session/hooks/useSession";
 import SessionLayout from "./modules/session/components/SessionLayout";
+import SessionTimer from "./modules/session/components/SessionTimer";
+import SessionActions from "./modules/session/components/SessionActions";
+import SessionHistory from "./modules/session/components/SessionHistory";
 
 function App() {
-  useEffect(() => {
-    // const engine = new SessionEngine();
+  const {
+    session,
+    elapsed,
+    dailySummary,
+    showDecsriptionInput,
+    start,
+    resume,
+    pause,
+    requestEnd,
+    confirmEnd,
+  } = useSession();
 
-    // console.log("Starting session...");
-    // engine.startSession("Testing session");
+  const [description, setDescription] = useState("");
 
-    // setTimeout(() => {
-    //   console.log("Pausing...");
-    //   engine.pauseSession();
-    // }, 2000);
-
-    // setTimeout(() => {
-    //   console.log("Resuming...");
-    //   engine.resumeSession();
-    // }, 7000);
-
-    // setTimeout(() => {
-    //   console.log("Ending session...");
-    //   const result = engine.endedSession();
-    //   console.log("Final session:", result);
-    //   console.log("Elapsed Time:", engine.getElapsedTime());
-    // }, 8000);
-
-    window.service = sessionService;
-    console.log("Service attached to window as 'service'");
-    // async function testStorage() {
-    //   const dayId = "2026-02-01";
-
-    //   await ensureDayExists(dayId);
-
-    //   await saveSession(
-    //     {
-    //       id: crypto.randomUUID(),
-    //       startTime: Date.now(),
-    //       endTime: Date.now(),
-    //       status: "ended",
-    //       totalActiveDuration: 5000,
-    //       customLimitMs: 10000,
-    //       description: "Test",
-    //     },
-    //     dayId,
-    //   );
-
-    //   console.log("Data saved Successfully");
-    // }
-
-    // testStorage();
-  }, []);
+  const handleConfirmEnd = async () => {
+    await confirmEnd(description);
+    setDescription("");
+  };
   return (
     <>
-      <SessionLayout />
+      <SessionLayout
+        main={
+          <div className="space-y-6">
+            <SessionTimer session={session} elapsed={elapsed} />
+            <SessionActions
+              session={session}
+              onStart={start}
+              onPause={pause}
+              onResume={resume}
+              onEnd={() => requestEnd("manual")}
+            />
+
+            {showDecsriptionInput && (
+              <div className="bg-white p-4 rounded-xl shadow space-y-3">
+                <input
+                  type="text"
+                  placeholder="What did you work on?"
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                  className="w-full border rounded-lg px-3 py-2"
+                  name="descriptionInput"
+                />
+                <button
+                  onClick={handleConfirmEnd}
+                  className="w-full bg-blue-600 text-white py-2 rounded-lg"
+                >
+                  Save Session
+                </button>
+              </div>
+            )}
+
+            {dailySummary && (
+              <div className="bg-white rounded-xl shadow p-4">
+                <h3 className="text-sm text-gray-500 uppercase mb-2">
+                  Today's Summary
+                </h3>
+
+                <p className="text-lg font-semibold">
+                  Total sessions: {dailySummary?.totalSessions}
+                </p>
+                <p className="text-lg font-semibold">
+                  Total Time:{" "}
+                  {dailySummary?.totalDuration
+                    ? new Date(dailySummary?.totalDuration)
+                        .toISOString()
+                        .slice(11, 19)
+                    : "00:00:00"}
+                </p>
+              </div>
+            )}
+          </div>
+        }
+        sidebar={<SessionHistory sessions={dailySummary?.sessions || []} />}
+      />
     </>
   );
 }

@@ -1,6 +1,3 @@
-import React from "react";
-import { saveSession } from "../../../storage/sessionRepository";
-
 export default function SessionActions({
   session,
   onStart,
@@ -31,6 +28,23 @@ export default function SessionActions({
               className="px-4 py-2 bg-yellow-500 text-white rounded-lg"
             >
               Pause
+            </button>
+            <button
+              onClick={onEnd}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg"
+            >
+              End
+            </button>
+          </>
+        )}
+
+        {status === "pause" && (
+          <>
+            <button
+              onClick={onResume}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg"
+            >
+              Resume
             </button>
             <button
               onClick={onEnd}
