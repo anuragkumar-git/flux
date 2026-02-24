@@ -14,11 +14,10 @@ export default function SessionHistory({ sessions = [] }) {
           {sessions.map((session, index) => (
             <div key={session.id} className="p-3 bg-gray-50 rounded-lg border">
               <p className="text-sm font-medium">Session {index + 1}</p>
-
+              <p className="text-sm mt-1">{session?.endedReason}</p>
               <p className="text-sm text-gray-500">
                 {fomatTime(session.totalActiveDuration)}
               </p>
-
               <p className="text-sm mt-1">{session?.description}</p>
             </div>
           ))}
