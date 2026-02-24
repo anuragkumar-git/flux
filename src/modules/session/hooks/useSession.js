@@ -10,10 +10,12 @@ export function useSession() {
 
     const refresh = useCallback(
         async () => {
+
             const current = await sessionService.getCurrentSession()
             setSession(current)
-
             if (current && current.status === "ended") {
+                setElapsed(0)
+            } else {
                 setElapsed(sessionService.getElapsedTime())
             }
 
@@ -25,9 +27,10 @@ export function useSession() {
 
     useEffect(() => {
         refresh()
-        const interval = setInterval(refresh, 800);
+        const interval = setInterval(refresh, 1000);
+        console.log({ Interval: interval });
         return () => clearInterval(interval)
-    }, [refresh])
+    }, [])
 
     const start = () => {
         sessionService.start("Untiteld Session")
