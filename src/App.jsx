@@ -4,6 +4,7 @@ import SessionLayout from "./modules/session/components/SessionLayout";
 import SessionTimer from "./modules/session/components/SessionTimer";
 import SessionActions from "./modules/session/components/SessionActions";
 import SessionHistory from "./modules/session/components/SessionHistory";
+import { formatTime } from "./shared/utils/formatTime";
 
 function App() {
   const {
@@ -61,23 +62,28 @@ function App() {
             )} */}
 
             {dailySummary && (
-              <div className="bg-white rounded-xl shadow p-4">
-                <h3 className="text-sm text-gray-500 uppercase mb-2">
-                  Today's Summary
-                </h3>
-
-                <p className="text-lg font-semibold">
-                  Total sessions: {dailySummary?.totalSessions}
-                </p>
-                <p className="text-lg font-semibold">
-                  Total Time:{" "}
-                  {dailySummary?.totalDuration
-                    ? new Date(dailySummary?.totalDuration)
-                        .toISOString()
-                        .slice(11, 19)
-                    : "00:00:00"}
-                </p>
-              </div>
+              <>
+                <div className="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl shadow-sm p-6 md:p-8">
+                  <div className="grid grid-cols-2 gap-6 text-center">
+                    <div>
+                      <p className="text-xs text-slate-400 uppercase tracking-wide">
+                        Sessions
+                      </p>
+                      <p className="text-3xl font-semibold text-slate-800">
+                        {dailySummary.totalSessions}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-400 uppercase tracking-wide">
+                        Time
+                      </p>
+                      <p className="text-3xl font-semibold text-slate-800">
+                        {formatTime(dailySummary.totalDuration)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         }

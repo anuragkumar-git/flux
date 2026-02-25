@@ -1,2 +1,17 @@
 /* tailwind setup */
 @import "tailwindcss";
+
+@layer utilities {
+  .animate-slow-pulse {
+    animation: pulse 5s ease-in-out infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}

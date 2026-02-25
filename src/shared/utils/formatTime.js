@@ -1,4 +1,4 @@
-export const fomatTime = (ms) => {
+export const formatTime = (ms) => {
 
     const totalSeconds = Math.floor(ms / 1000)
     const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0')
