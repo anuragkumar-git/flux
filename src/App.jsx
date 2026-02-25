@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {useSession} from "./modules/session/hooks/useSession";
+import { useSession } from "./modules/session/hooks/useSession";
 import SessionLayout from "./modules/session/components/SessionLayout";
 import SessionTimer from "./modules/session/components/SessionTimer";
 import SessionActions from "./modules/session/components/SessionActions";
@@ -14,16 +14,17 @@ function App() {
     start,
     resume,
     pause,
+    end,
     requestEnd,
     confirmEnd,
   } = useSession();
 
   const [description, setDescription] = useState("");
 
-  const handleConfirmEnd = async () => {
-    await confirmEnd(description);
-    setDescription("");
-  };
+  // const handleConfirmEnd = async () => {
+  //   await confirmEnd(description);
+  //   setDescription("");
+  // };
   return (
     <>
       <SessionLayout
@@ -35,10 +36,10 @@ function App() {
               onStart={start}
               onPause={pause}
               onResume={resume}
-              onEnd={() => requestEnd("manual")}
+              onEnd={end}
             />
 
-            {showDecsriptionInput && (
+            {/* {showDecsriptionInput && (
               <div className="bg-white p-4 rounded-xl shadow space-y-3">
                 <input
                   type="text"
@@ -57,7 +58,7 @@ function App() {
                   Save Session
                 </button>
               </div>
-            )}
+            )} */}
 
             {dailySummary && (
               <div className="bg-white rounded-xl shadow p-4">

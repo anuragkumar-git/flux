@@ -6,9 +6,9 @@ export default function SessionTimer({ session, elapsed }) {
   return (
     <>
       <div className="bg-white rounded-xl shadow p-6 text-center space-y-4">
-        <p className="text-sm uppercase tracking-wide text-gray-500">
+        {/* <p className="text-sm uppercase tracking-wide text-gray-500">
           {status}
-        </p>
+        </p> */}
 
         <h2 className="text-4xl font-mono font-bold">{fomatTime(elapsed)}</h2>
       </div>

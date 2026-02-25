@@ -1,5 +1,5 @@
-// const PAUSE_TIME_MS = 10 * 60 * 1000; //10 minutes
-const PAUSE_TIME_MS = 4000; //4 Seconds
+const PAUSE_TIME_MS = 10 * 60 * 1000; //10 minutes
+// const PAUSE_TIME_MS = 4000; //4 Seconds
 /**
  * Session Engine
  * Manages only ONE active session at a time.
@@ -17,8 +17,8 @@ export class SessionEngine {
      * @param {string} description
      * @param {number} customLimitMs
      */
-    // startSession(description, customLimitMs = 3 * 60 * 60 * 1000) {
-    startSession(description, customLimitMs = 6000) {
+    startSession(description, customLimitMs = 9 * 60 * 60 * 1000) {
+    // startSession(description, customLimitMs = 6000) {
         if (this.currentSession && this.currentSession.status === "running") {
             throw new Error("Session already running")
         }
@@ -26,7 +26,8 @@ export class SessionEngine {
         const now = Date.now()
 
         this.currentSession = {
-            id: crypto.randomUUID(),
+            // id: crypto.randomUUID(),
+            id: Date.now(),
             startTime: now,
             endTime: null,
             status: "running",

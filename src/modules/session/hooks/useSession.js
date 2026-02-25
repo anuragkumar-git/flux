@@ -63,11 +63,14 @@ export function useSession() {
         refresh()
     }
 
+    const end = async () => {
+        await sessionService.end()
+    }
     return {
         session,
         elapsed,
         dailySummary,
         showDecsriptionInput,
-        start, pause, resume, requestEnd, confirmEnd
+        start, pause, resume, end, requestEnd, confirmEnd
     }
 }
