@@ -1,3 +1,4 @@
+import { formatClockTime } from "../../../shared/utils/formatClockTime";
 import { formatTime } from "../../../shared/utils/formatTime";
 
 export default function SessionHistory({ sessions = [] }) {
@@ -19,7 +20,10 @@ export default function SessionHistory({ sessions = [] }) {
               <p className="text-sm font-semibold text-slate-700">
                 Session {index + 1}
               </p>
-              <p className="text-sm mt-1">{session?.endedReason}</p>
+              <p className="text-xs mt-1 text-slate-400">
+                {formatClockTime(session.startTime)} –{" "}
+                {formatClockTime(session.endTime)}
+              </p>
               <p className="text-sm mt-1 text-emerald-600 font-medium">
                 {formatTime(session.totalActiveDuration)}
               </p>
