@@ -1,16 +1,123 @@
-# React + Vite
+# 🟢 [Flux](https://anuragkumar-git.github.io/flux/) — Offline First Time Tracking PWA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, offline-first productivity timer built with React + Vite.
+Designed for focused study and deep work sessions with clean architecture and scalable foundations.
 
-Currently, two official plugins are available:
+## ✨ Features (v1.0.0)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- ⏱ Session-based time tracking
 
-## React Compiler
+- ⏸ Pause & auto-terminate after 10 min inactivity
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+<!-- - ⏳ Configurable session limit (default 3 hours) -->
 
-## Expanding the ESLint configuration
+- 📅 Day-wise grouped history
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ✏️ Inline session title editing
+
+- 📊 Daily total time calculation
+
+- 📱 Mobile-first responsive UI
+
+- 🌿 Modern emerald productivity theme
+
+- ⚡ Offline support (PWA)
+
+- 💾 IndexedDB persistence using Dexie
+
+## 🏗 Architecture Overview
+
+Flux follows a layered architecture:
+```
+UI (React Components)
+        ↓
+Hook Layer (useSession)
+        ↓
+Service Layer
+        ↓
+Session Engine (Domain Logic)
+        ↓
+Repository Layer (IndexedDB via Dexie)
+```
+#### Why this matters:
+
+- UI is fully separated from domain logic
+
+- Persistence layer can be swapped with backend later
+
+- Engine is pure and testable
+
+- Scalable for multi-device sync in future versions
+
+## 🧠 Session Rules
+
+- A session can be:
+
+    - Running
+
+    - Paused
+
+    - Ended
+
+- If pause exceeds 10 minutes → session auto-ends
+
+- If session crosses midnight → new day session starts automatically
+
+- Paused time is NOT counted in total duration
+
+- Session descriptions are editable
+
+- System controls duration logic
+
+## 🛠 Tech Stack
+
+- `React (Vite + SWC)`
+
+- `TailwindCSS v4`
+
+- `Dexie.js` (IndexedDB wrapper)
+
+- `vite-plugin-pwa`
+
+- `Modern ES Modules`
+
+## 📦 Installation
+```Bash
+git clone https://github.com/anuragkumar-git/flux
+cd flux
+npm install
+npm run dev
+```
+
+## 🚀 Build
+```Bash
+npm run build
+npm run preview
+```
+
+## 🌐 Deployment
+
+Deployed via GitHub Pages.
+[Link](https://anuragkumar-git.github.io/flux/)
+
+
+## 🔮 Roadmap (Future Versions)
+
+- Weekly analytics
+
+- Streak tracking
+
+- Multi-tab synchronization
+
+- Backend sync
+
+- User authentication
+
+- Dark mode
+
+- Export sessions (CSV)
+
+## 🧑‍💻 Author
+
+### Anurag Patel
+Computer Engineering graduate focused on scalable architecture.

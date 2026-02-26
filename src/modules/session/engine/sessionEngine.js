@@ -1,5 +1,5 @@
 const PAUSE_TIME_MS = 10 * 60 * 1000; //10 minutes
-// const PAUSE_TIME_MS = 4000; //4 Seconds
+
 /**
  * Session Engine
  * Manages only ONE active session at a time.
@@ -18,7 +18,7 @@ export class SessionEngine {
      * @param {number} customLimitMs
      */
     startSession(description, customLimitMs = 9 * 60 * 60 * 1000) {
-    // startSession(description, customLimitMs = 6000) {
+
         if (this.currentSession && this.currentSession.status === "running") {
             throw new Error("Session already running")
         }
@@ -46,9 +46,9 @@ export class SessionEngine {
      *  Pause current session
      */
     pauseSession() {
-        // console.log("pauseSessionStatus:", this.currentSession.status);
+
         if (!this.currentSession || this.currentSession.status !== "running") {
-            // console.log("!pauseSessionStatus:", this.currentSession.status);
+
             throw new Error("No running session to pause")
         }
         this.pauseStartedAt = Date.now()
@@ -62,10 +62,10 @@ export class SessionEngine {
      */
     resumeSession() {
         if (!this.currentSession || this.currentSession.status !== "pause") {
-            // console.log("!resumeSessionStatus:", this.currentSession.status);
+
             throw new Error("No paused session to resume")
         }
-        // console.log("resumeSessionStatus:", this.currentSession.status);
+
 
         const now = Date.now()
         const pauseDuration = now - this.pauseStartedAt
@@ -151,7 +151,7 @@ export class SessionEngine {
     getCurrentSession() {
         if (!this.currentSession) return null
 
-        if(this.currentSession.status === "running" && this.isLimitReached()){
+        if (this.currentSession.status === "running" && this.isLimitReached()) {
             return this.endedSession("session-timout")
         }
         // Check midnight crossing
@@ -160,7 +160,6 @@ export class SessionEngine {
         }
 
         if (this.currentSession.status === "pause") {
-            // console.log("sessionStauts:", this.currentSession.status);
 
             const now = Date.now()
             const pauseDuration = now - this.pauseStartedAt

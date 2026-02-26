@@ -1,29 +1,13 @@
-import { useState } from "react";
 import { useSession } from "./modules/session/hooks/useSession";
 import SessionLayout from "./modules/session/components/SessionLayout";
 import SessionTimer from "./modules/session/components/SessionTimer";
 import SessionActions from "./modules/session/components/SessionActions";
 import SessionHistory from "./modules/session/components/SessionHistory";
-import { formatTime } from "./shared/utils/formatTime";
 
 function App() {
-  const {
-    session,
-    elapsed,
-    dailySummary,
-    showDecsriptionInput,
-    start,
-    resume,
-    pause,
-    end,
-  } = useSession();
+  const { session, elapsed, dailySummary, start, resume, pause, end } =
+    useSession();
 
-  const [description, setDescription] = useState("");
-
-  // const handleConfirmEnd = async () => {
-  //   await confirmEnd(description);
-  //   setDescription("");
-  // };
   return (
     <>
       <SessionLayout
@@ -37,28 +21,6 @@ function App() {
               onResume={resume}
               onEnd={end}
             />
-
-            {/* {showDecsriptionInput && (
-              <div className="bg-white p-4 rounded-xl shadow space-y-3">
-                <input
-                  type="text"
-                  placeholder="What did you work on?"
-                  value={description}
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                  className="w-full border rounded-lg px-3 py-2"
-                  name="descriptionInput"
-                />
-                <button
-                  onClick={handleConfirmEnd}
-                  className="w-full bg-blue-600 text-white py-2 rounded-lg"
-                >
-                  Save Session
-                </button>
-              </div>
-            )} */}
-
           </div>
         }
         sidebar={<SessionHistory sessions={dailySummary?.sessions || []} />}

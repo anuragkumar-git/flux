@@ -1,6 +1,6 @@
-import { formatClockTime } from "../../../shared/utils/formatClockTime";
-import { formatTime } from "../../../shared/utils/formatTime";
-import { formatDayLabel } from "../../../shared/utils/formatDayLabel";
+import { formatClockTime } from "../utils/formatClockTime";
+import { formatTime } from "../utils/formatTime";
+import { formatDayLabel } from "../utils/formatDayLabel";
 import { useSession } from "../hooks/useSession";
 import { useEffect, useRef, useState } from "react";
 import { sessionService } from "../../../services/sessionService";
@@ -20,34 +20,10 @@ export default function SessionHistory({ sessions = [] }) {
   return (
     <>
       <div>
-        {/* <h3 className="text-lg font-semibold mb-4">Today</h3> */}
-
         <div className="space-y-3">
           {sessions.length === 0 && (
             <p className="text-sm text-gray-500">No session yet.</p>
           )}
-
-          {/* {sessions.map((session, index) => (
-            <div
-              key={session.id}
-              className="bg-white/70 backdrop-blur-sm border border-slate-200 rounded-xl p-4 hover:bg-white transition-colors duration-200"
-            >
-              <p className="text-sm font-semibold text-slate-700">
-                Session {index + 1}
-              </p>
-              <p className="text-xs mt-1 text-slate-400">
-                {formatClockTime(session.startTime)} –{" "}
-                {formatClockTime(session.endTime)}
-              </p>
-              <p className="text-sm mt-1 text-emerald-600 font-medium">
-                {formatTime(session.totalActiveDuration)}
-              </p>
-
-              <p className="text-sm mt-1 text-slate-600">
-                {session.description}
-              </p>
-            </div>
-          ))}*/}
 
           {allDaysHistory.map((day, i) => (
             <div
@@ -88,7 +64,6 @@ export default function SessionHistory({ sessions = [] }) {
                             }}
                             onKeyDown={async (e) => {
                               if (e.key === "Enter") {
-                                console.log(editValue);
 
                                 if (editValue.trim()) {
                                   await sessionService.updateDescription(
@@ -127,14 +102,8 @@ export default function SessionHistory({ sessions = [] }) {
                       </td>
                     </tr>
                   ))}
-                  {/* <td>Malcolm Lockyer</td>
-                  <td>1961</td> */}
                 </tbody>
               </table>
-              {/* <div className="mt-3 text-xs text-slate-500 flex justify-between">
-                <span></span>
-                <span className="text-xs text-slate-500 ">{formatTime(day.totalDuration)}</span>
-              </div> */}
             </div>
           ))}
         </div>

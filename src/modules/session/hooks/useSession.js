@@ -14,12 +14,6 @@ export function useSession() {
 
             const current = await sessionService.getCurrentSession()
             setSession(current)
-            // if (current && current?.status === "ended") {
-            //     setElapsed(sessionService.getElapsedTime())
-            //     // setElapsed(0)
-            // } else {
-            //     setElapsed(sessionService.getElapsedTime())
-            // }
             setElapsed(sessionService.getElapsedTime())
 
             const todayId = sessionService.getDayIdFromTimeStemp(Date.now())
