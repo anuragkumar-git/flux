@@ -7,6 +7,7 @@ export function useSession() {
     const [dailySummary, setDailySummary] = useState(null)
     const [showDecsriptionInput, setShowDecsriptionInput] = useState(false)
     const [pendingEndReason, setPendingEndReason] = useState(null)
+    const [allDaysHistory, setAllDaysHistory] = useState([])
 
     const refresh = useCallback(
         async () => {
@@ -24,6 +25,8 @@ export function useSession() {
             const todayId = sessionService.getDayIdFromTimeStemp(Date.now())
             const summary = await sessionService.getDailySummary(todayId)
             setDailySummary(summary)
+            const grouped = await sessionService.getAllDaysWithSessions()
+            setAllDaysHistory(grouped)
         }, []
     )
 
@@ -71,6 +74,7 @@ export function useSession() {
         elapsed,
         dailySummary,
         showDecsriptionInput,
+        allDaysHistory,
         start, pause, resume, end, requestEnd, confirmEnd
     }
 }
