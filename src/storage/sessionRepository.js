@@ -19,3 +19,7 @@ export async function getSessionbyDay(dayId) {
         .equals(dayId)
         .toArray()
 }
+
+export async function getAllSessions(){
+    return db.sessions.toArray();
+}

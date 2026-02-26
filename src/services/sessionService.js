@@ -1,6 +1,6 @@
 import { SessionEngine } from "../modules/session/engine/sessionEngine";
 import { ensureDayExists } from "../storage/dayRepository";
-import { getSessionbyDay, saveSession } from "../storage/sessionRepository";
+import { getAllSessions, getSessionbyDay, saveSession } from "../storage/sessionRepository";
 
 /**
  * SessionService
@@ -54,7 +54,7 @@ class SessionService {
         const endedSession = this.engine.endedSession(reason)
 
         endedSession.description = description;
-        
+
         if (!this.hasPersistedCurrentSession) {
             await this.persistSession(endedSession)
             this.hasPersistedCurrentSession = true
@@ -103,6 +103,29 @@ class SessionService {
 
     isLimitReached() {
         return this.engine.isLimitReached();
+    }
+
+    async getAllDaysWithSessions() {
+        const sessions = await getAllSessions()
+
+        const dayMap = {}
+
+        sessions.forEach(session => {
+            if (!dayMap[session.dayId]) {
+                dayMap[session.dayId] = {
+                    dayId: session.dayId,
+                    totalDuration: 0,
+                    totalSession: 0,
+                    session: []
+                }
+            }
+
+            dayMap[session.dayId].sessions.push(session);
+            dayMap[session.dayId].totalDuration += session.totalDuration;
+            dayMap[session.dayId].totalSession += 1
+        });
+
+        return Object.values(dayMap).sort((a, b) => a.dayId < b.dayId ? 1 : -1)
     }
 }
 
