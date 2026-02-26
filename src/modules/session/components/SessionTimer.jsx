@@ -1,5 +1,5 @@
-import { formatTime } from "../../../shared/utils/formatTime";
 import { useSession } from "../hooks/useSession";
+import { formatTime } from "../utils/formatTime";
 
 export default function SessionTimer({ session, elapsed }) {
   const status = session?.status || "idle";
