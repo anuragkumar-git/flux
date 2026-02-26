@@ -39,7 +39,7 @@ export default function SessionLayout({ main, sidebar }) {
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity duration-300"
             onClick={() => setIsSidebarOpen(false)}
           >
-            <div className="absolute right-0 top-0 h-full w-80 bg-white/70 border-l border-slate-200 shadow-2xl p-6 overflow-y-auto transition-transform duration-300"
+            <div className="absolute right-0 top-0 h-full w-auto bg-white/70 border-l border-slate-200 shadow-2xl p-6 overflow-y-auto transition-transform duration-300"
             onClick={(e)=>{e.stopPropagation()}}
             >
               <button
