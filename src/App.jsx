@@ -16,8 +16,6 @@ function App() {
     resume,
     pause,
     end,
-    requestEnd,
-    confirmEnd,
   } = useSession();
 
   const [description, setDescription] = useState("");
@@ -61,30 +59,6 @@ function App() {
               </div>
             )} */}
 
-            {dailySummary && (
-              <>
-                <div className="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl shadow-sm p-6 md:p-8">
-                  <div className="grid grid-cols-2 gap-6 text-center">
-                    <div>
-                      <p className="text-xs text-slate-400 uppercase tracking-wide">
-                        Sessions
-                      </p>
-                      <p className="text-3xl font-semibold text-slate-800">
-                        {dailySummary.totalSessions}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-slate-400 uppercase tracking-wide">
-                        Time
-                      </p>
-                      <p className="text-3xl font-semibold text-slate-800">
-                        {formatTime(dailySummary.totalDuration)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
           </div>
         }
         sidebar={<SessionHistory sessions={dailySummary?.sessions || []} />}

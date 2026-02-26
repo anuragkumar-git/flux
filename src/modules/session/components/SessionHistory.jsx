@@ -9,8 +9,7 @@ export default function SessionHistory({ sessions = [] }) {
   // console.log("not string 26-02-2026", formatDayLabel(26-02-2026));
   // console.log("2026-26-02", formatDayLabel("2026-26-02"));
   // console.log("2026-02-26", formatDayLabel("2026-02-26"));
-  
-  
+
   return (
     <>
       <div>
@@ -48,8 +47,15 @@ export default function SessionHistory({ sessions = [] }) {
               key={day.dayId}
               className="bg-white/70 backdrop-blur-sm border border-slate-200 rounded-xl p-4 hover:bg-white transition-colors duration-200"
             >
-              <h3 className="text-lg font-semibold">{i === 0 ? "Today" : formatDayLabel(day.dayId)}</h3>
-              <table className="table-fixed ">
+              <div className="flex justify-between px-1">
+                <h3 className="text-lg font-semibold">
+                  {i === 0 ? "Today" : formatDayLabel(day.dayId)}
+                </h3>
+                <span className="mt-2 text-xs text-slate-500 ">
+                  {formatTime(day.totalDuration)}
+                </span>
+              </div>
+              <table className="table-fixed mt-1">
                 <tbody>
                   {day.sessions.map((session, index) => (
                     <tr key={session.id}>
@@ -74,6 +80,10 @@ export default function SessionHistory({ sessions = [] }) {
                   <td>1961</td> */}
                 </tbody>
               </table>
+              {/* <div className="mt-3 text-xs text-slate-500 flex justify-between">
+                <span></span>
+                <span className="text-xs text-slate-500 ">{formatTime(day.totalDuration)}</span>
+              </div> */}
             </div>
           ))}
         </div>
