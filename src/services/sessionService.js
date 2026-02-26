@@ -110,18 +110,18 @@ class SessionService {
 
         const dayMap = {}
 
-        sessions.forEach(session => {
+        sessions.forEach((session) => {
             if (!dayMap[session.dayId]) {
                 dayMap[session.dayId] = {
                     dayId: session.dayId,
                     totalDuration: 0,
                     totalSession: 0,
-                    session: []
+                    sessions: []
                 }
             }
 
             dayMap[session.dayId].sessions.push(session);
-            dayMap[session.dayId].totalDuration += session.totalDuration;
+            dayMap[session.dayId].totalDuration += session.totalActiveDuration;
             dayMap[session.dayId].totalSession += 1
         });
 
