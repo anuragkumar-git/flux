@@ -63,12 +63,24 @@ export function useSession() {
     const end = async () => {
         await sessionService.end()
     }
+
+    const clearHistoryRepo = async () => {
+        if (session?.status === "running" || session?.status === "pause") {
+            alert("End current session before clearing history.");
+            return;
+        }
+        await sessionService.clearHistory()
+        // reset state
+        setDailySummary(null);
+        setAllDaysHistory([]);
+    }
     return {
         session,
         elapsed,
         dailySummary,
         showDecsriptionInput,
         allDaysHistory,
+        clearHistoryRepo,
         start, pause, resume, end, requestEnd, confirmEnd
     }
 }

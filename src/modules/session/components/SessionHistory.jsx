@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { sessionService } from "../../../services/sessionService";
 
 export default function SessionHistory({ sessions = [] }) {
-  const { allDaysHistory } = useSession();
+  const { allDaysHistory, clearHistoryRepo } = useSession();
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
   const inputRef = useRef(null);
@@ -64,7 +64,6 @@ export default function SessionHistory({ sessions = [] }) {
                             }}
                             onKeyDown={async (e) => {
                               if (e.key === "Enter") {
-
                                 if (editValue.trim()) {
                                   await sessionService.updateDescription(
                                     session.id,
@@ -106,6 +105,14 @@ export default function SessionHistory({ sessions = [] }) {
               </table>
             </div>
           ))}
+          {allDaysHistory.length > 0 && (
+            <button
+              className="text-sm text-gray-500"
+              onClick={() => clearHistoryRepo()}
+            >
+              Clear History
+            </button>
+          )}
         </div>
       </div>
     </>

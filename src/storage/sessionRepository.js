@@ -27,3 +27,7 @@ export async function getAllSessions() {
 export async function updateSessionDescription(id, description) {
     return db.sessions.update(id, { description })
 }
+
+export async function clearHistory(){
+    return db.sessions.clear()   
+}

@@ -1,6 +1,6 @@
 import { SessionEngine } from "../modules/session/engine/sessionEngine";
 import { ensureDayExists } from "../storage/dayRepository";
-import { getAllSessions, getSessionbyDay, saveSession, updateSessionDescription } from "../storage/sessionRepository";
+import { clearHistory, getAllSessions, getSessionbyDay, saveSession, updateSessionDescription } from "../storage/sessionRepository";
 
 /**
  * SessionService
@@ -130,6 +130,10 @@ class SessionService {
 
     async updateDescription(id, description) {
         await updateSessionDescription(id, description)
+    }
+
+    async clearHistory() {
+        await clearHistory()
     }
 }
 
