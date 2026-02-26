@@ -20,6 +20,10 @@ export async function getSessionbyDay(dayId) {
         .toArray()
 }
 
-export async function getAllSessions(){
+export async function getAllSessions() {
     return db.sessions.toArray();
+}
+
+export async function updateSessionDescription(id, description) {
+    return db.sessions.update(id, { description })
 }

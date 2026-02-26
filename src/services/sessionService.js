@@ -1,6 +1,6 @@
 import { SessionEngine } from "../modules/session/engine/sessionEngine";
 import { ensureDayExists } from "../storage/dayRepository";
-import { getAllSessions, getSessionbyDay, saveSession } from "../storage/sessionRepository";
+import { getAllSessions, getSessionbyDay, saveSession, updateSessionDescription } from "../storage/sessionRepository";
 
 /**
  * SessionService
@@ -126,6 +126,10 @@ class SessionService {
         });
 
         return Object.values(dayMap).sort((a, b) => a.dayId < b.dayId ? 1 : -1)
+    }
+
+    async updateDescription(id, description) {
+        await updateSessionDescription(id, description)
     }
 }
 

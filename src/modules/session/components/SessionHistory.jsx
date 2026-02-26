@@ -2,13 +2,20 @@ import { formatClockTime } from "../../../shared/utils/formatClockTime";
 import { formatTime } from "../../../shared/utils/formatTime";
 import { formatDayLabel } from "../../../shared/utils/formatDayLabel";
 import { useSession } from "../hooks/useSession";
+import { useEffect, useRef, useState } from "react";
+import { sessionService } from "../../../services/sessionService";
 
 export default function SessionHistory({ sessions = [] }) {
   const { allDaysHistory } = useSession();
-  // console.log("Db:26-02-2026", formatDayLabel("26-02-2026"));
-  // console.log("not string 26-02-2026", formatDayLabel(26-02-2026));
-  // console.log("2026-26-02", formatDayLabel("2026-26-02"));
-  // console.log("2026-02-26", formatDayLabel("2026-02-26"));
+  const [editingId, setEditingId] = useState(null);
+  const [editValue, setEditValue] = useState("");
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (editingId && inputRef.current) {
+      inputRef.current.select();
+    }
+  }, [editingId]);
 
   return (
     <>
@@ -62,8 +69,52 @@ export default function SessionHistory({ sessions = [] }) {
                       <td className="text-sm px-2 font-semibold text-slate-700">
                         {index + 1}
                       </td>
-                      <td className="text-sm px-2 text-slate-600">
-                        {session.description}
+                      <td className="text-sm px-2 py-1 text-slate-600">
+                        {editingId === session.id ? (
+                          <input
+                            ref={inputRef}
+                            autoFocus
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onBlur={async () => {
+                              if (editValue.trim()) {
+                                await sessionService.updateDescription(
+                                  session.id,
+                                  editValue.trim(),
+                                );
+                              }
+                              setEditingId(null);
+                            }}
+                            onKeyDown={async (e) => {
+                              if (e.key === "Enter") {
+                                console.log(editValue);
+
+                                if (editValue.trim()) {
+                                  await sessionService.updateDescription(
+                                    session.id,
+                                    editValue.trim(),
+                                  );
+                                }
+                                setEditingId(null);
+                              }
+                              if (e.key === "Escape") {
+                                setEditingId(null);
+                              }
+                            }}
+                            className="shadow-sm hover:shadow-md active:scale-95 transition-all duration-200 focus:outline-none focus:ring-0 focus:rounded"
+                          />
+                        ) : (
+                          <span
+                            onClick={() => {
+                              setEditingId(session.id);
+                              setEditValue(session.description);
+                            }}
+                            className=" rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          >
+                            {session?.description}
+                          </span>
+                        )}
                       </td>
                       <td className="text-xs px-2 text-slate-400">
                         {" "}
