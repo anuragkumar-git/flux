@@ -5,8 +5,7 @@ import SessionActions from "./modules/session/components/SessionActions";
 import SessionHistory from "./modules/session/components/SessionHistory";
 
 function App() {
-  const { session, elapsed, dailySummary, start, resume, pause, end } =
-    useSession();
+  const { session, elapsed, start, resume, pause, end } = useSession();
 
   return (
     <>
@@ -23,7 +22,7 @@ function App() {
             />
           </div>
         }
-        sidebar={<SessionHistory sessions={dailySummary?.sessions || []} />}
+        sidebar={<SessionHistory />}
       />
     </>
   );

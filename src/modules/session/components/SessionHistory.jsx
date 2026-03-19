@@ -5,7 +5,7 @@ import { useSession } from "../hooks/useSession";
 import { useEffect, useRef, useState } from "react";
 import { sessionService } from "../../../services/sessionService";
 
-export default function SessionHistory({ sessions = [] }) {
+export default function SessionHistory() {
   const { allDaysHistory, clearHistoryRepo } = useSession();
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
@@ -21,7 +21,7 @@ export default function SessionHistory({ sessions = [] }) {
     <>
       <div>
         <div className="space-y-3">
-          {sessions.length === 0 && (
+          {allDaysHistory.length === 0 && (
             <p className="text-sm text-gray-500">No session yet.</p>
           )}
 
@@ -32,7 +32,7 @@ export default function SessionHistory({ sessions = [] }) {
             >
               <div className="flex justify-between px-1">
                 <h3 className="text-lg font-semibold">
-                  {i === 0 ? "Today" : formatDayLabel(day.dayId)}
+                  {formatDayLabel(day.dayId)}
                 </h3>
                 <span className="mt-2 text-xs text-slate-500 ">
                   {formatTime(day.totalDuration)}
@@ -48,6 +48,7 @@ export default function SessionHistory({ sessions = [] }) {
                       <td className="text-sm px-2 py-1 text-slate-600">
                         {editingId === session.id ? (
                           <input
+                            name="description"
                             ref={inputRef}
                             autoFocus
                             type="text"
@@ -76,7 +77,7 @@ export default function SessionHistory({ sessions = [] }) {
                                 setEditingId(null);
                               }
                             }}
-                            className="shadow-sm hover:shadow-md active:scale-95 transition-all duration-200 focus:outline-none focus:ring-0 focus:rounded"
+                            className="shadow-sm w-15 md:w-35 hover:shadow-md focus:outline-none focus:ring-0 focus:rounded"
                           />
                         ) : (
                           <span
