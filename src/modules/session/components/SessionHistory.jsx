@@ -22,7 +22,7 @@ export default function SessionHistory() {
       <div>
         <div className="space-y-3">
           {allDaysHistory.length === 0 && (
-            <p className="text-sm text-gray-500">No session yet.</p>
+            <p className="text-sm text-gray-500 mr-25 sm:mr-35">No session yet.</p>
           )}
 
           {allDaysHistory.map((day, i) => (
