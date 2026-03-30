@@ -32,7 +32,13 @@ export default function SessionLayout({ main, sidebar }) {
         )}
 
         <footer className="bg-white/70 backdrop-blur-md border-t border-slate-200 p-4 flex justify-between items-center ">
-          <h1 className="text-xl font-semibold tracking-tight">Flux</h1>
+          <a
+            href={"https://anuragkumar-git.github.io/anurag-portfolio/"}
+            target="_blank"
+            className="text-xl font-semibold tracking-tight"
+          >
+            Flux
+          </a>
 
           <button
             className="text-md px-4 py-1"
