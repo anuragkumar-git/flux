@@ -1,200 +1,175 @@
-const PAUSE_TIME_MS = 10 * 60 * 1000; //10 minutes
+const PAUSE_TIME_MS = 10 * 60 * 1000;
+const DEFAULT_LIMIT_MS = 9 * 60 * 60 * 1000;
 
 /**
  * Session Engine
- * Manages only ONE active session at a time.
+ * Owns the in-memory session state. Persistence is handled by SessionService.
  */
 export class SessionEngine {
     constructor() {
         this.currentSession = null;
-        this.pauseStartedAt = null
-        this.accumulatedPauseTime = 0
+        this.pauseStartedAt = null;
+        this.accumulatedPauseTime = 0;
     }
 
-
-    /**
-     * Starts a new session
-     * @param {string} description
-     * @param {number} customLimitMs
-     */
-    startSession(description, customLimitMs = 9 * 60 * 60 * 1000) {
-
-        if (this.currentSession && this.currentSession.status === "running") {
-            throw new Error("Session already running")
+    startSession(description = "Untitled Session", customLimitMs = DEFAULT_LIMIT_MS) {
+        if (this.currentSession && ["running", "pause"].includes(this.currentSession.status)) {
+            throw new Error("Finish or resume the active session first");
         }
 
-        const now = Date.now()
+        if (!Number.isFinite(customLimitMs) || customLimitMs <= 0) {
+            throw new Error("Session limit must be a positive duration");
+        }
 
+        const now = Date.now();
         this.currentSession = {
-            // id: crypto.randomUUID(),
-            id: Date.now(),
+            id: crypto.randomUUID(),
             startTime: now,
             endTime: null,
             status: "running",
             totalActiveDuration: 0,
             customLimitMs,
             description,
-        }
-
+        };
         this.pauseStartedAt = null;
-        this.accumulatedPauseTime = 0
+        this.accumulatedPauseTime = 0;
 
         return this.currentSession;
     }
 
-    /**
-     *  Pause current session
-     */
     pauseSession() {
-
         if (!this.currentSession || this.currentSession.status !== "running") {
-
-            throw new Error("No running session to pause")
+            throw new Error("No running session to pause");
         }
-        this.pauseStartedAt = Date.now()
-        this.currentSession.status = "pause"
 
-        return this.currentSession
+        this.pauseStartedAt = Date.now();
+        this.currentSession.status = "pause";
+        return this.currentSession;
     }
 
-    /**
-     *  resume currently paused session
-     */
     resumeSession() {
         if (!this.currentSession || this.currentSession.status !== "pause") {
-
-            throw new Error("No paused session to resume")
+            throw new Error("No paused session to resume");
         }
 
-
-        const now = Date.now()
-        const pauseDuration = now - this.pauseStartedAt
-
-        if (pauseDuration > PAUSE_TIME_MS) {
-            return this.endedSession("pause-timeout")
-        }
-
-        this.accumulatedPauseTime += pauseDuration
-        this.pauseStartedAt = null
-        this.currentSession.status = "running"
-
-        return this.currentSession
-    }
-
-    /**
-    *  getElapsedTime
-    */
-    getElapsedTime() {
-        if (!this.currentSession) return 0
+        const session = this.getCurrentSession();
+        if (session.status === "ended") return session;
 
         const now = Date.now();
+        this.accumulatedPauseTime += now - this.pauseStartedAt;
+        this.pauseStartedAt = null;
+        this.currentSession.status = "running";
+        return this.currentSession;
+    }
+
+    getElapsedTime(now = Date.now()) {
+        if (!this.currentSession) return 0;
 
         if (this.currentSession.status === "running") {
-            return (
-                now -
-                this.currentSession.startTime -
-                this.accumulatedPauseTime)
+            return Math.max(0, now - this.currentSession.startTime - this.accumulatedPauseTime);
         }
 
         if (this.currentSession.status === "pause") {
-            return (
-                this.pauseStartedAt -
-                this.currentSession.startTime -
-                this.accumulatedPauseTime
-            )
+            return Math.max(0, this.pauseStartedAt - this.currentSession.startTime - this.accumulatedPauseTime);
         }
 
-        if (this.currentSession.status === "ended") {
-            return this.currentSession.totalActiveDuration
-        }
-
-        return 0
+        return this.currentSession.status === "ended"
+            ? this.currentSession.totalActiveDuration
+            : 0;
     }
 
-    /**
-   *  End currently active session
-   */
-    endedSession(reason = "manual") {
+    endedSession(reason = "manual", endTime = Date.now()) {
         if (!this.currentSession) {
-            throw new Error("No active session to end")
+            throw new Error("No active session to end");
         }
 
-        const now = Date.now()
+        if (this.currentSession.status === "ended") return this.currentSession;
 
-        let finalDuration
+        const activeEndTime = this.currentSession.status === "pause"
+            ? this.pauseStartedAt
+            : endTime;
 
-        if (this.currentSession.status === "running") {
-            finalDuration =
-                now -
-                this.currentSession.startTime -
-                this.accumulatedPauseTime
-        } else if (this.currentSession.status === "pause") {
-            finalDuration =
-                this.pauseStartedAt -
-                this.currentSession.startTime -
-                this.accumulatedPauseTime
-        } else {
-            return this.currentSession
-        }
-
-        this.currentSession.endTime = now;
-        this.currentSession.status = "ended"
-        this.currentSession.totalActiveDuration = finalDuration
-        this.currentSession.endedReason = reason
-
-        return this.currentSession
+        this.currentSession.endTime = Math.max(this.currentSession.startTime, endTime);
+        this.currentSession.status = "ended";
+        this.currentSession.totalActiveDuration = Math.max(
+            0,
+            activeEndTime - this.currentSession.startTime - this.accumulatedPauseTime
+        );
+        this.currentSession.endedReason = reason;
+        return this.currentSession;
     }
 
-    /**
-   * Returns current active session
-   */
-    getCurrentSession() {
-        if (!this.currentSession) return null
-
-        if (this.currentSession.status === "running" && this.isLimitReached()) {
-            return this.endedSession("session-timout")
-        }
-        // Check midnight crossing
-        if (this.currentSession.status === "running" && this.hasCrossedMidnight()) {
-            return this.endedSession("midnight")
+    getCurrentSession(now = Date.now()) {
+        if (!this.currentSession || this.currentSession.status === "ended") {
+            return this.currentSession;
         }
 
-        if (this.currentSession.status === "pause") {
+        const midnight = this.getNextMidnightTimestamp();
 
-            const now = Date.now()
-            const pauseDuration = now - this.pauseStartedAt
+        if (this.currentSession.status === "running") {
+            const limitAt = this.currentSession.startTime
+                + this.accumulatedPauseTime
+                + this.currentSession.customLimitMs;
 
-            if (pauseDuration > PAUSE_TIME_MS) {
-                return this.endedSession("pause-timeout")
+            if (now >= limitAt && limitAt <= midnight) {
+                return this.endedSession("session-timeout", limitAt);
+            }
+            if (now >= midnight) {
+                return this.endedSession("midnight", midnight);
             }
         }
 
-        return this.currentSession
+        if (this.currentSession.status === "pause") {
+            const pauseTimeoutAt = this.pauseStartedAt + PAUSE_TIME_MS;
+            const endAt = Math.min(midnight, pauseTimeoutAt);
+
+            if (now >= endAt) {
+                return this.endedSession(
+                    endAt === midnight ? "midnight" : "pause-timeout",
+                    endAt
+                );
+            }
+        }
+
+        return this.currentSession;
     }
 
-    /**
-    * Checks time limit of current active session
-    */
+    getNextMidnightTimestamp() {
+        const midnight = new Date(this.currentSession.startTime);
+        midnight.setHours(24, 0, 0, 0);
+        return midnight.getTime();
+    }
+
+    getSnapshot() {
+        if (!this.currentSession) return null;
+
+        return {
+            currentSession: { ...this.currentSession },
+            pauseStartedAt: this.pauseStartedAt,
+            accumulatedPauseTime: this.accumulatedPauseTime,
+        };
+    }
+
+    restoreSnapshot(snapshot) {
+        if (!snapshot?.currentSession) return;
+
+        this.currentSession = snapshot.currentSession;
+        this.pauseStartedAt = snapshot.pauseStartedAt;
+        this.accumulatedPauseTime = snapshot.accumulatedPauseTime ?? 0;
+    }
+
+    clearSession() {
+        this.currentSession = null;
+        this.pauseStartedAt = null;
+        this.accumulatedPauseTime = 0;
+    }
+
+    hasActiveSession() {
+        return ["running", "pause"].includes(this.currentSession?.status);
+    }
+
     isLimitReached() {
-        if (!this.currentSession) return null
-
-        const elapsed = this.getElapsedTime()
-        return elapsed >= this.currentSession.customLimitMs
-    }
-
-    /**
-    * Detect Midnight current active session
-    */
-    hasCrossedMidnight() {
-        if (!this.currentSession) return null
-
-        const startDate = new Date(this.currentSession.startTime)
-        const nowDate = new Date()
-
-        return (
-            startDate.getFullYear() !== nowDate.getFullYear() ||
-            startDate.getMonth() !== nowDate.getMonth() ||
-            startDate.getDate() !== nowDate.getDate()
-        )
+        if (!this.currentSession || this.currentSession.status !== "running") return false;
+        return this.getElapsedTime() >= this.currentSession.customLimitMs;
     }
 }

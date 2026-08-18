@@ -1,86 +1,87 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { sessionService } from '../../../services/sessionService'
+import { useCallback, useEffect, useRef, useState } from "react";
+import { sessionService } from "../../../services/sessionService";
 
 export function useSession() {
-    const [session, setSession] = useState(null)
-    const [elapsed, setElapsed] = useState(0)
-    const [dailySummary, setDailySummary] = useState(null)
-    const [showDecsriptionInput, setShowDecsriptionInput] = useState(false)
-    const [pendingEndReason, setPendingEndReason] = useState(null)
-    const [allDaysHistory, setAllDaysHistory] = useState([])
+    const [session, setSession] = useState(null);
+    const [elapsed, setElapsed] = useState(0);
+    const [dailySummary, setDailySummary] = useState(null);
+    const [allDaysHistory, setAllDaysHistory] = useState([]);
+    const [error, setError] = useState(null);
+    const refreshing = useRef(false);
 
-    const refresh = useCallback(
-        async () => {
+    const refresh = useCallback(async () => {
+        if (refreshing.current) return;
 
-            const current = await sessionService.getCurrentSession()
-            setSession(current)
-            setElapsed(sessionService.getElapsedTime())
+        refreshing.current = true;
+        try {
+            const current = await sessionService.getCurrentSession();
+            const todayId = sessionService.getDayIdFromTimestamp(Date.now());
+            const [summary, grouped] = await Promise.all([
+                sessionService.getDailySummary(todayId),
+                sessionService.getAllDaysWithSessions(),
+            ]);
 
-            const todayId = sessionService.getDayIdFromTimeStemp(Date.now())
-            const summary = await sessionService.getDailySummary(todayId)
-            setDailySummary(summary)
-            const grouped = await sessionService.getAllDaysWithSessions()
-            setAllDaysHistory(grouped)
-        }, []
-    )
+            setSession(current);
+            setElapsed(sessionService.getElapsedTime());
+            setDailySummary(summary);
+            setAllDaysHistory(grouped);
+            setError(null);
+        } catch (refreshError) {
+            setError(refreshError);
+        } finally {
+            refreshing.current = false;
+        }
+    }, []);
 
     useEffect(() => {
-        refresh()
+        refresh();
         const interval = setInterval(refresh, 1000);
-        return () => clearInterval(interval)
-    }, [])
+        return () => clearInterval(interval);
+    }, [refresh]);
 
-    const start = () => {
-        sessionService.start("Untiteld Session")
-        refresh()
-    }
+    const runAction = useCallback(async (action) => {
+        try {
+            await action();
+            await refresh();
+        } catch (actionError) {
+            setError(actionError);
+        }
+    }, [refresh]);
 
-    const pause = () => {
-        sessionService.pause();
-        refresh()
-    }
+    const start = useCallback(
+        () => runAction(() => sessionService.start("Untitled Session")),
+        [runAction]
+    );
+    const pause = useCallback(() => runAction(() => sessionService.pause()), [runAction]);
+    const resume = useCallback(() => runAction(() => sessionService.resume()), [runAction]);
+    const end = useCallback(() => runAction(() => sessionService.end()), [runAction]);
 
-    const resume = () => {
-        sessionService.resume()
-        refresh()
-    }
+    const updateDescription = useCallback(
+        async (id, description) => {
+            await runAction(() => sessionService.updateDescription(id, description));
+        },
+        [runAction]
+    );
 
-    const requestEnd = (reason = "manual") => {
-        setPendingEndReason(reason)
-        setShowDecsriptionInput(true)
-    }
-
-    const confirmEnd = async (description) => {
-        await sessionService.end({
-            reason: pendingEndReason,
-            description
-        })
-        setShowDecsriptionInput(false)
-        setPendingEndReason(null)
-        refresh()
-    }
-
-    const end = async () => {
-        await sessionService.end()
-    }
-
-    const clearHistoryRepo = async () => {
-        if (session?.status === "running" || session?.status === "pause") {
-            alert("End current session before clearing history.");
+    const clearHistory = useCallback(async () => {
+        if (!window.confirm("Clear all completed session history? This cannot be undone.")) {
             return;
         }
-        await sessionService.clearHistory()
-        // reset state
-        setDailySummary(null);
-        setAllDaysHistory([]);
-    }
+        await runAction(() => sessionService.clearHistory());
+    }, [runAction]);
+
     return {
         session,
         elapsed,
         dailySummary,
-        showDecsriptionInput,
         allDaysHistory,
-        clearHistoryRepo,
-        start, pause, resume, end, requestEnd, confirmEnd
-    }
+        error,
+        start,
+        pause,
+        resume,
+        end,
+        refresh,
+        updateDescription,
+        clearHistory,
+    };
 }

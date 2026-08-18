@@ -1,17 +1,6 @@
-import { useSession } from "../hooks/useSession";
 import { formatTime } from "../utils/formatTime";
 
-export default function SessionTimer({ session, elapsed }) {
-  const status = session?.status || "idle";
-  const statusStyles = {
-    running: "text-emerald-600",
-    pause: "text-amber-500",
-    idle: "text-slate-400",
-    ended: "text-slate-400",
-  };
-  const { dailySummary } = useSession();
-  
-
+export default function SessionTimer({ elapsed, dailySummary }) {
   return (
     <>
       <div className="text-center space-y-4">
@@ -27,7 +16,7 @@ export default function SessionTimer({ session, elapsed }) {
           {formatTime(elapsed)}
         </h2>
         <p className="text-2xl  font-mono tracking-tight  text-slate-800">
-          {formatTime(dailySummary?.totalDuration)}
+          {formatTime(dailySummary?.totalDuration ?? 0)}
         </p>
         
       </div>

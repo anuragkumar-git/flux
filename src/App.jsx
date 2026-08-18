@@ -3,16 +3,30 @@ import SessionLayout from "./modules/session/components/SessionLayout";
 import SessionTimer from "./modules/session/components/SessionTimer";
 import SessionActions from "./modules/session/components/SessionActions";
 import SessionHistory from "./modules/session/components/SessionHistory";
+import CurrentDateTime from "./modules/session/components/CurrentDateTime";
 
 function App() {
-  const { session, elapsed, start, resume, pause, end } = useSession();
+  const {
+    session,
+    elapsed,
+    dailySummary,
+    allDaysHistory,
+    error,
+    start,
+    resume,
+    pause,
+    end,
+    updateDescription,
+    clearHistory,
+  } = useSession();
 
   return (
     <>
       <SessionLayout
         main={
           <div className="space-y-6">
-            <SessionTimer session={session} elapsed={elapsed} />
+            <CurrentDateTime />
+            <SessionTimer elapsed={elapsed} dailySummary={dailySummary} />
             <SessionActions
               session={session}
               onStart={start}
@@ -20,9 +34,16 @@ function App() {
               onResume={resume}
               onEnd={end}
             />
+            {error && <p className="text-sm text-red-600">{error.message}</p>}
           </div>
         }
-        sidebar={<SessionHistory />}
+        sidebar={
+          <SessionHistory
+            allDaysHistory={allDaysHistory}
+            onClearHistory={clearHistory}
+            onUpdateDescription={updateDescription}
+          />
+        }
       />
     </>
   );

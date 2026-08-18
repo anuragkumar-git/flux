@@ -1,21 +1,33 @@
 import { formatClockTime } from "../utils/formatClockTime";
 import { formatTime } from "../utils/formatTime";
 import { formatDayLabel } from "../utils/formatDayLabel";
-import { useSession } from "../hooks/useSession";
 import { useEffect, useRef, useState } from "react";
-import { sessionService } from "../../../services/sessionService";
 
-export default function SessionHistory() {
-  const { allDaysHistory, clearHistoryRepo } = useSession();
+export default function SessionHistory({ allDaysHistory, onClearHistory, onUpdateDescription }) {
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
   const inputRef = useRef(null);
+  const cancelEditRef = useRef(false);
 
   useEffect(() => {
     if (editingId && inputRef.current) {
       inputRef.current.select();
     }
   }, [editingId]);
+
+  const commitEdit = async (session) => {
+    if (cancelEditRef.current) {
+      cancelEditRef.current = false;
+      setEditingId(null);
+      return;
+    }
+
+    const description = editValue.trim();
+    if (description !== session.description) {
+      await onUpdateDescription(session.id, description);
+    }
+    setEditingId(null);
+  };
 
   return (
     <>
@@ -25,7 +37,7 @@ export default function SessionHistory() {
             <p className="text-sm text-gray-500 mr-25 sm:mr-35">No session yet.</p>
           )}
 
-          {allDaysHistory.map((day, i) => (
+          {allDaysHistory.map((day) => (
             <div
               key={day.dayId}
               className="bg-white/70 backdrop-blur-sm border border-slate-200 rounded-xl p-4 hover:bg-white transition-colors duration-200"
@@ -54,27 +66,15 @@ export default function SessionHistory() {
                             type="text"
                             value={editValue}
                             onChange={(e) => setEditValue(e.target.value)}
-                            onBlur={async () => {
-                              if (editValue.trim()) {
-                                await sessionService.updateDescription(
-                                  session.id,
-                                  editValue.trim(),
-                                );
-                              }
-                              setEditingId(null);
-                            }}
-                            onKeyDown={async (e) => {
+                            onBlur={() => commitEdit(session)}
+                            onKeyDown={(e) => {
                               if (e.key === "Enter") {
-                                if (editValue.trim()) {
-                                  await sessionService.updateDescription(
-                                    session.id,
-                                    editValue.trim(),
-                                  );
-                                }
-                                setEditingId(null);
+                                e.preventDefault();
+                                e.currentTarget.blur();
                               }
                               if (e.key === "Escape") {
-                                setEditingId(null);
+                                cancelEditRef.current = true;
+                                e.currentTarget.blur();
                               }
                             }}
                             className="shadow-sm w-15 md:w-35 hover:shadow-md focus:outline-none focus:ring-0 focus:rounded"
@@ -82,8 +82,9 @@ export default function SessionHistory() {
                         ) : (
                           <span
                             onClick={() => {
+                              cancelEditRef.current = false;
                               setEditingId(session.id);
-                              setEditValue(session.description);
+                              setEditValue(session.description ?? "");
                             }}
                             className=" rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
                           >
@@ -109,7 +110,7 @@ export default function SessionHistory() {
           {allDaysHistory.length > 0 && (
             <button
               className="text-sm text-gray-500"
-              onClick={() => clearHistoryRepo()}
+              onClick={onClearHistory}
             >
               Clear History
             </button>

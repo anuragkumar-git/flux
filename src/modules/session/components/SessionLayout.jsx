@@ -4,7 +4,7 @@ export default function SessionLayout({ main, sidebar }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <>
-      <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 text-slate-800 flex flex-col">
+      <div className="relative min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 text-slate-800 flex flex-col">
         <main className="flex-1 flex items-center justify-center px-4">
           {main}
         </main>

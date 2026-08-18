@@ -61,7 +61,7 @@ Repository Layer (IndexedDB via Dexie)
 
 - If pause exceeds 10 minutes → session auto-ends
 
-- If session crosses midnight → new day session starts automatically
+- If a session crosses midnight → it ends exactly at the day boundary
 
 - Paused time is NOT counted in total duration
 
