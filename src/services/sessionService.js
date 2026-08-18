@@ -180,6 +180,16 @@ class SessionService {
         return [...dayMap.values()].sort((a, b) => b.dayId.localeCompare(a.dayId));
     }
 
+    async updateCurrentDescription(description) {
+        await this.initialize();
+
+        const session = this.engine.updateDescription(description);
+
+        await this.saveActiveState();
+
+        return session;
+    }
+
     async updateDescription(id, description) {
         const updatedCount = await updateSessionDescription(id, description);
         if (updatedCount !== 1) {

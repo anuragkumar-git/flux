@@ -49,9 +49,13 @@ export function useSession() {
     }, [refresh]);
 
     const start = useCallback(
-        () => runAction(() => sessionService.start("Untitled Session")),
+        (description = "Focus Session", customLimitMs = null) =>
+            runAction(() =>
+                sessionService.start(description, customLimitMs)
+            ),
         [runAction]
     );
+
     const pause = useCallback(() => runAction(() => sessionService.pause()), [runAction]);
     const resume = useCallback(() => runAction(() => sessionService.resume()), [runAction]);
     const end = useCallback(() => runAction(() => sessionService.end()), [runAction]);
@@ -59,6 +63,15 @@ export function useSession() {
     const updateDescription = useCallback(
         async (id, description) => {
             await runAction(() => sessionService.updateDescription(id, description));
+        },
+        [runAction]
+    );
+
+    const updateCurrentDescription = useCallback(
+        async (description) => {
+            await runAction(() =>
+                sessionService.updateCurrentDescription(description)
+            );
         },
         [runAction]
     );
@@ -82,6 +95,7 @@ export function useSession() {
         end,
         refresh,
         updateDescription,
+        updateCurrentDescription,
         clearHistory,
     };
 }

@@ -9,6 +9,6 @@
  * @property {number | null } endTime
  * @property {SessionStatus} status
  * @property {number} totalActiveDuration
- * @property {number} customLimitMs
+ * @property {number | null} customLimitMs
  * @property {string} description
 */
