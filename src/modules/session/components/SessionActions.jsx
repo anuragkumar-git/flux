@@ -9,12 +9,12 @@ export default function SessionActions({
 
   return (
     <>
-      <div className="flex gap-3 justify-center mt-4">
+      <div className="mt-4 flex justify-center gap-3">
         {(status === "idle" || status === "ended") && (
           <>
             <button
               onClick={onStart}
-              className="px-6 py-2.5 rounded-full text-white font-medium  bg-cyan-500 shadow-md shadow-emerald-200/50 hover:from-cyan-600 hover:to-cyan-700 hover:shadow-lg hover:shadow-cyan-300/40 active:scale-95 transition-all duration-200"
+              className="rounded-full border border-cyan-100/25 bg-linear-to-br from-blue-400 to-blue-600 px-7 py-3 font-semibold text-white shadow-lg shadow-blue-950/60 transition-all duration-200 hover:scale-[1.03] hover:from-blue-300 hover:to-blue-500 hover:shadow-blue-500/25 active:scale-95"
             >
               Start
             </button>
@@ -25,13 +25,13 @@ export default function SessionActions({
           <>
             <button
               onClick={onPause}
-              className="px-6 py-2.5 rounded-full text-slate-200  hover:text-white font-medium bg-linear-to-r from-slate-600 to-slate-800 shadow-md shadow-slate-200/40 hover:from-slate-800 hover:to-slate-900 hover:shadow-lg hover:shadow-slate-800/40 active:scale-95 transition-all duration-200"
+              className="rounded-full border border-blue-100/15 bg-slate-700/55 px-6 py-3 font-medium text-slate-100 shadow-lg shadow-black/20 transition hover:scale-[1.03] hover:bg-slate-600/70 active:scale-95"
             >
               Pause
             </button>
             <button
               onClick={onEnd}
-              className="px-6 py-2.5 rounded-full text-white font-medium bg-linear-to-r from-red-500 to-rose-600 shadow-md shadow-rose-200/40 hover:from-rose-600 hover:to-red-700 hover:shadow-lg hover:shadow-rose-300/40 active:scale-95 transition-all duration-200"
+              className="rounded-full border border-rose-200/10 bg-rose-500/85 px-6 py-3 font-medium text-white shadow-lg shadow-rose-950/50 transition hover:scale-[1.03] hover:bg-rose-400 active:scale-95"
             >
               End
             </button>
@@ -42,13 +42,13 @@ export default function SessionActions({
           <>
             <button
               onClick={onResume}
-              className="px-6 py-2.5 rounded-full text-slate-50 font-medium bg-linear-to-r from-cyan-500  to-cyan-500  shadow-md shadow-cyan-200/40 hover:from-cyan-600 hover:to-cyan-900 hover:shadow-lg hover:shadow-emerald-300/40 active:scale-95 transition-all duration-200"
+              className="rounded-full border border-cyan-100/25 bg-linear-to-br from-cyan-400 to-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-950/60 transition hover:scale-[1.03] hover:from-cyan-300 hover:to-blue-500 active:scale-95"
             >
               Resume
             </button>
             <button
               onClick={onEnd}
-             className="px-6 py-2.5 rounded-full text-white font-medium bg-linear-to-r from-red-500 to-rose-600 shadow-md shadow-rose-200/40 hover:from-rose-600 hover:to-red-700 hover:shadow-lg hover:shadow-rose-300/40 active:scale-95 transition-all duration-200"
+             className="rounded-full border border-rose-200/10 bg-rose-500/85 px-6 py-3 font-medium text-white shadow-lg shadow-rose-950/50 transition hover:scale-[1.03] hover:bg-rose-400 active:scale-95"
             >
               End
             </button>

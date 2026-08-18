@@ -34,19 +34,19 @@ export default function SessionHistory({ allDaysHistory, onClearHistory, onUpdat
       <div>
         <div className="space-y-3">
           {allDaysHistory.length === 0 && (
-            <p className="text-sm text-gray-500 mr-25 sm:mr-35">No session yet.</p>
+            <p className="mr-25 text-sm text-slate-500 sm:mr-35">No session yet.</p>
           )}
 
           {allDaysHistory.map((day) => (
             <div
               key={day.dayId}
-              className="bg-white/70 backdrop-blur-sm border border-slate-200 rounded-xl p-4 hover:bg-white transition-colors duration-200"
+              className="rounded-2xl border border-blue-100/10 bg-slate-900/60 p-4 backdrop-blur-sm transition-colors duration-200 hover:bg-slate-800/70"
             >
               <div className="flex justify-between px-1">
-                <h3 className="text-lg font-semibold">
+                <h3 className="text-lg font-semibold text-slate-100">
                   {formatDayLabel(day.dayId)}
                 </h3>
-                <span className="mt-2 text-xs text-slate-500 ">
+                <span className="mt-2 text-xs text-blue-100/50">
                   {formatTime(day.totalDuration)}
                 </span>
               </div>
@@ -54,10 +54,10 @@ export default function SessionHistory({ allDaysHistory, onClearHistory, onUpdat
                 <tbody>
                   {day.sessions.map((session, index) => (
                     <tr key={session.id}>
-                      <td className="text-sm px-2 font-semibold text-slate-700">
+                      <td className="px-2 text-sm font-semibold text-blue-100/80">
                         {index + 1}
                       </td>
-                      <td className="text-sm px-2 py-1 text-slate-600">
+                      <td className="px-2 py-1 text-sm text-slate-300">
                         {editingId === session.id ? (
                           <input
                             name="description"
@@ -77,7 +77,7 @@ export default function SessionHistory({ allDaysHistory, onClearHistory, onUpdat
                                 e.currentTarget.blur();
                               }
                             }}
-                            className="shadow-sm w-15 md:w-35 hover:shadow-md focus:outline-none focus:ring-0 focus:rounded"
+                            className="w-15 rounded border border-blue-200/20 bg-slate-950/80 px-2 py-1 text-slate-100 shadow-sm outline-none transition focus:border-blue-300/55 md:w-35"
                           />
                         ) : (
                           <span
@@ -86,18 +86,18 @@ export default function SessionHistory({ allDaysHistory, onClearHistory, onUpdat
                               setEditingId(session.id);
                               setEditValue(session.description ?? "");
                             }}
-                            className=" rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            className="w-full rounded px-2 py-1 transition hover:bg-blue-200/5 focus:outline-none focus:ring-2 focus:ring-blue-400/60"
                           >
                             {session?.description}
                           </span>
                         )}
                       </td>
-                      <td className="text-xs px-2 text-slate-400">
+                      <td className="px-2 text-xs text-slate-500">
                         {" "}
                         {formatClockTime(session.startTime)} –{" "}
                         {formatClockTime(session.endTime)}
                       </td>
-                      <td className="text-sm   text-emerald-600 font-medium">
+                      <td className="text-sm font-medium text-cyan-300">
                         {" "}
                         {formatTime(session.totalActiveDuration)}
                       </td>
@@ -109,7 +109,7 @@ export default function SessionHistory({ allDaysHistory, onClearHistory, onUpdat
           ))}
           {allDaysHistory.length > 0 && (
             <button
-              className="text-sm text-gray-500"
+              className="text-sm text-slate-500 transition hover:text-rose-300"
               onClick={onClearHistory}
             >
               Clear History

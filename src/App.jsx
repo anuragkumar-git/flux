@@ -26,7 +26,11 @@ function App() {
         main={
           <div className="space-y-6">
             <CurrentDateTime />
-            <SessionTimer elapsed={elapsed} dailySummary={dailySummary} />
+            <SessionTimer
+              session={session}
+              elapsed={elapsed}
+              dailySummary={dailySummary}
+            />
             <SessionActions
               session={session}
               onStart={start}
@@ -34,7 +38,7 @@ function App() {
               onResume={resume}
               onEnd={end}
             />
-            {error && <p className="text-sm text-red-600">{error.message}</p>}
+            {error && <p className="text-center text-sm text-rose-300">{error.message}</p>}
           </div>
         }
         sidebar={

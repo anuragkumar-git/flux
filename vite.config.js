@@ -15,8 +15,8 @@ export default defineConfig({
         name: 'Flux',
         short_name: 'Flux',
         description: 'Offline first Time Tracking PWA',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        theme_color: '#050814',
+        background_color: '#050814',
         display: 'standalone',
         start_url: '/flux/',
         icons: [
