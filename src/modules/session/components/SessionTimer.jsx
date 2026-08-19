@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { formatTime } from "../utils/formatTime";
+import { formatDurationLabel } from "../utils/formatDurationLabel";
 
 const statusLabel = {
   idle: "Ready when you are",
@@ -52,8 +53,8 @@ export default function SessionTimer({
   return (
     <section className="liquid-timer" aria-label="Current focus session">
       <div
-      // className={`liquid-orb liquid-orb--${status}`}
-      // style={{ "--fill-level": `${progress * 100}%` }}
+        className={`sm:liquid-orb liquid-orb--${status}`}
+        // style={{ "sm:--fill-level": `${progress * 100}%` }}
       >
         {/* <div className="liquid-orb__aura" aria-hidden="true" /> */}
         <div className="liquid-orb__fill" aria-hidden="true">
@@ -98,10 +99,10 @@ export default function SessionTimer({
                       setIsEditingName(true);
                     }
                   }}
-                  className={`text-sm font-medium transition ${
+                  className={`  font-medium transition ${
                     status === "pause"
-                      ? "text-blue-100/80 hover:text-cyan-200"
-                      : "cursor-default text-blue-100/75"
+                      ? "liquid-orb__status hover:text-cyan-200"
+                      : "cursor-default   liquid-orb__status"
                   }`}
                 >
                   {displayName}
@@ -133,8 +134,15 @@ export default function SessionTimer({
           </time>
 
           <p className="liquid-orb__caption">
-            {status === "pause" ?? "Paused ·"} Focus time (Today){" "}
-            {formatTime(dailySummary?.totalDuration ?? 0)}
+            {dailySummary?.totalDuration > 0 ? (
+              <>
+                {status === "pause" && "Paused · "}
+                Focus time (Today){" "}
+                {formatDurationLabel(dailySummary.totalDuration)}
+              </>
+            ) : (
+              "No focus time yet"
+            )}
           </p>
         </div>
       </div>

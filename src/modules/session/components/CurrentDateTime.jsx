@@ -9,9 +9,10 @@ function formatDateTime(date) {
       year: "numeric",
     }).format(date),
     time: new Intl.DateTimeFormat("en-GB", {
-      hour: "2-digit",
+    // time: new Intl.DateTimeFormat("en-US", {   //hour12 -> am/pm in capital
+      hour: "numeric",
       minute: "2-digit",
-      // second: "2-digit",
+      second: "2-digit",
       hour12: false,
     }).format(date),
   };

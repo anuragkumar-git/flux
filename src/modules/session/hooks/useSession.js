@@ -77,11 +77,19 @@ export function useSession() {
     );
 
     const clearHistory = useCallback(async () => {
-        if (!window.confirm("Clear all completed session history? This cannot be undone.")) {
+        const hasActiveSession =
+            session?.status === "running" ||
+            session?.status === "pause";
+
+        const message = hasActiveSession
+            ? "End the active session before clearing history"
+            : "Clear all completed session history? This cannot be undone.";
+
+        if (!window.confirm(message)) {
             return;
         }
         await runAction(() => sessionService.clearHistory());
-    }, [runAction]);
+    }, [session?.status, runAction]);
 
     return {
         session,

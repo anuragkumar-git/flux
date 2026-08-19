@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatDurationLabel } from "../utils/formatDurationLabel";
 
 export default function SessionLayout({
   main,
@@ -114,9 +115,7 @@ export default function SessionLayout({
               } ${isSessionActive ? "cursor-not-allowed opacity-50" : ""}`}
             >
               {hasLimit
-                ? `${String(Math.floor(customLimitMs / 3600000)).padStart(2, "0")}:${String(
-                    Math.floor((customLimitMs % 3600000) / 60000),
-                  ).padStart(2, "0")} limit`
+                ? `${formatDurationLabel(customLimitMs)} Limit`
                 : "Set limit"}
             </button>
 

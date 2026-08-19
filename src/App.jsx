@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "./modules/session/hooks/useSession";
 import SessionLayout from "./modules/session/components/SessionLayout";
 import SessionTimer from "./modules/session/components/SessionTimer";
@@ -24,6 +24,23 @@ function App() {
 
   const [customLimitMs, setCustomLimitMs] = useState(null);
   const [sessionName, setSessionName] = useState("Focus Session");
+
+  const previousSessionRef = useRef(null);
+
+  useEffect(() => {
+    const previousSession = previousSessionRef.current;
+
+    const justEnded =
+      previousSession?.status !== "ended" && session?.status === "ended";
+
+    const endedBecauseOfLimit = session?.endedReason === "session-timeout";
+
+    if (justEnded && endedBecauseOfLimit && "vibrate" in navigator) {
+      navigator.vibrate([80, 40, 120]);
+    }
+
+    previousSessionRef.current = session;
+  }, [session]);
 
   useEffect(() => {
     if (session?.status === "ended") {

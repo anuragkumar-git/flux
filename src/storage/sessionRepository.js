@@ -35,11 +35,29 @@ export async function updateSessionDescription(id, description) {
     return db.sessions.update(id, { description })
 }
 
-export async function clearHistory(){
-    return db.transaction("rw", db.sessions, db.days, async () => {
-        await db.sessions.clear()
-        await db.days.clear()
-    })
+export async function clearHistory() {
+    return db.transaction(
+        "rw",
+        db.sessions,
+        db.days,
+        db.activeSessions,
+        async () => {
+            const activeSession = await db.activeSessions.get("current");
+
+            const status = activeSession?.currentSession?.status;
+
+            if (status === "running" || status === "pause") {
+                throw new Error(
+                    "End the active session before clearing history"
+                );
+            }
+
+            await db.sessions.clear();
+            await db.days.clear();
+            await db.activeSessions.clear();
+
+        }
+    );
 }
 
 export async function getActiveSession() {
