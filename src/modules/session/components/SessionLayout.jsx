@@ -115,8 +115,8 @@ export default function SessionLayout({
               } ${isSessionActive ? "cursor-not-allowed opacity-50" : ""}`}
             >
               {hasLimit
-                ? `${formatDurationLabel(customLimitMs)} Limit`
-                : "Set limit"}
+                ? `${formatDurationLabel(customLimitMs)} Timer`
+                : "Set timer"}
             </button>
 
             {/* Limit popover */}
@@ -128,7 +128,8 @@ export default function SessionLayout({
                   </p>
 
                   <p className="mt-1 text-xs text-blue-100/45">
-                    Set a limit for this session.
+                    {/* Set a limit for this session. */}
+                    Set a timer for this session.
                   </p>
                 </div>
 
@@ -206,10 +207,17 @@ export default function SessionLayout({
                       onClick={clearLimit}
                       className="text-xs font-medium text-slate-500 transition hover:text-rose-300"
                     >
-                      Remove limit
+                      {/* Remove limit */}
+                      Remove timer
                     </button>
                   ) : (
-                    <span />
+                    <button
+                      type="button"
+                      onClick={clearLimit}
+                      className="text-xs font-medium text-slate-500 transition hover:text-rose-300"
+                    >
+                      Close
+                    </button>
                   )}
 
                   <button
